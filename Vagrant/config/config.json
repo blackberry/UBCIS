@@ -1,0 +1,9 @@
+{
+    "images": ["alpine:3.9.4", "centos:7.7.1908", "debian:10.2", "fedora:29", "ubuntu:18.10"],
+    "scanners": ["anchore", "clair", "microscanner", "trivy", "snyk"],
+    "createXLSX": true,
+    "parallel": true,
+    "output": "out",
+    "auths": {
+    }
+}
