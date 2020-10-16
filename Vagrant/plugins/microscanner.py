@@ -21,11 +21,9 @@ import json
 import shutil
 import subprocess
 import os
-
-import sys
-sys.path.insert(1, '/scipts')
-
 import utils
+import sys
+sys.path.insert(1, '/scripts')
 
 
 def parse(vulnObj, fileLocation):

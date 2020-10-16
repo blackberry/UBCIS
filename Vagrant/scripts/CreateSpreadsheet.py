@@ -98,6 +98,7 @@ def createSpreadsheet():
     data = parse.parseContainers(containerNames, scanners, oldData)
     images = data['images']
 
+    data['parsers'] = list(set(data['parsers']).union(set(oldData['parsers'])))
     data['parsers'].sort()
 
     wb = Workbook()

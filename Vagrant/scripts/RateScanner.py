@@ -59,7 +59,7 @@ with open(dataFilePath, 'r') as json_file:
                     rating = rating.lower()
                     if rating not in counter:
                         # This is a problem with a CVE not being marked. To fix this, add a mark in the spreadsheet
-                        raise Exception("Invalid rating", rating, "for CVE", vuln)
+                        raise Exception("Invalid rating", rating, "for CVE", vuln, 'in', imageName)
                     else:
                         totals[rating] += 1
 

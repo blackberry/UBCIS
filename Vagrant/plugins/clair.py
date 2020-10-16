@@ -21,11 +21,9 @@ import json
 import os
 import subprocess
 import shutil
-
-import sys
-sys.path.insert(1, '/scipts')
-
 import utils
+import sys
+sys.path.insert(1, '/scripts')
 
 
 def parse(vulnObj, fileLocation):
@@ -80,6 +78,7 @@ def scan(image):
 
 
 def destroy():
+    os.chdir("/config/clair")
     os.system("docker stop db")
     os.system("docker stop clair")
     os.system("docker rm db")
