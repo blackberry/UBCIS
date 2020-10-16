@@ -25,8 +25,11 @@ with open('/config/config.json', 'r') as json_file:
     config = json.load(json_file)
 
 output = "/results/output/" + config['output']
-
+print('Processing {0}...'.format(output))
 loadedJson = None
+
+legitimateRatings = ['tp', 'c', 'mm', 'd', 'fp']
+incompleteImages = []
 
 with open(output + ".json", 'r') as json_file:
     loadedJson = json.load(json_file)
@@ -35,6 +38,7 @@ with open(output + ".json", 'r') as json_file:
 
     for worksheet in wb.worksheets:
         realName = worksheet.title
+        print('Processing {0}...'.format(realName))
         imageVulns = loadedJson['images'][realName]
 
         row = 2
@@ -47,6 +51,10 @@ with open(output + ".json", 'r') as json_file:
             filtered = list(filter(lambda x: x['vulnerability'] == cell, imageVulns))
             if len(filtered) == 1:
                 filtered[0]['trueVulnerability'] = trueVuln
+
+                if (trueVuln is None or trueVuln.lower() not in legitimateRatings) and realName not in incompleteImages:
+                    incompleteImages.append(realName)
+
                 filtered[0]['notes'] = notes
             else:
                 print(cell, trueVuln, notes)
@@ -57,11 +65,16 @@ with open(output + ".json", 'r') as json_file:
 with open(output + ".json", 'w') as json_file:
     json.dump(loadedJson, json_file)
 
-for image in loadedJson['images']:
-    for vuln in loadedJson['images'][image]:
-        del vuln['parsers']
-        vuln['version'] = ''
-        vuln['notes'] = ''
+imageKeys = list(loadedJson['images'].keys())
+for image in imageKeys:
+    if image in incompleteImages:
+        print('Removing image without complete vulnerability marks from benchmark', image)
+        del loadedJson['images'][image]
+    else:
+        for vuln in loadedJson['images'][image]:
+            del vuln['parsers']
+            vuln['version'] = ''
+            vuln['notes'] = ''
 
 loadedJson['parsers'] = []
 

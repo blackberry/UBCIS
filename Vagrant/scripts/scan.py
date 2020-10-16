@@ -23,15 +23,16 @@ import sys
 import CreateSpreadsheet
 import utils
 
+# TODO: Copy certs
+# TODO: Fix configure / destroy
+
 from multiprocessing import Process
 
 sys.path.insert(1, '/plugins')
 
 
 def runScanner(plugins, scanner, image):
-    plugins[scanner].configure()
     plugins[scanner].scan(image)
-    plugins[scanner].destroy()
 
 
 with open('/config/config.json') as f:
@@ -69,17 +70,26 @@ with open('/config/config.json') as f:
             print("Cannot run scanner", scanner, "plugin not loaded.")
         else:
             os.makedirs(f"/results/{scanner}", exist_ok=True)
-            for image in config['images']:
-                p = Process(target=runScanner, args=(plugins, scanner, image,))
-                processes.append(p)
-                p.start()
 
-                if not config['parallel']:
-                    p.join()
+            plugins[scanner].configure()
+
+            # Setup scanners
+            for image in config['images']:
+                if config['parallel']:
+                    p = Process(target=runScanner, args=(plugins, scanner, image,))
+                    processes.append(p)
+                    p.start()
+                else:
+                    plugins[scanner].scan(image)
 
     if config['parallel']:
+        # Join all running scanners
         for p in processes:
             p.join()
+
+    # All scanners are done, destroy them
+    for scanner in config['scanners']:
+        plugins[scanner].destroy()
 
     print("All scanners have finished")
 

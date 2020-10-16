@@ -43,7 +43,7 @@ Installation, setup and configuration of container image scanners is an adventur
 }
 ```
 
-If connecting to a private registry you will need to fill the `auths` object similar to how the credentials are specified in Docker credentials [store](https://docs.docker.com/engine/reference/commandline/login/):
+By default UBCIS will pull images from Docker Hub. If connecting to a private registry you will need to fill the `auths` object similar to how the credentials are specified in Docker credentials [store](https://docs.docker.com/engine/reference/commandline/login/):
 
 ```
     "auths": {
